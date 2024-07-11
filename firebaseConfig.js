@@ -2,7 +2,7 @@
 const { initializeApp } = require('firebase/app');
 const { getFirestore } = require('firebase/firestore');
 const { getStorage } = require('firebase/storage');
-const { addDoc, collection, doc,}=require ('firebase/firestore');
+const { addDoc, collection, doc,query,getDocs, where}=require ('firebase/firestore');
 require('dotenv').config();
 
 
@@ -31,5 +31,8 @@ module.exports = {
     storage,
     addDoc,
     collection,
-    doc
+    doc,
+    where,
+    query,
+    getDocs
   };
