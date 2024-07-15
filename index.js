@@ -173,7 +173,8 @@ async function exchangeGoogleCodeForToken(code) {
     if (userDataResponse.status === 200) { 
       const userData = userDataResponse.data;
       console.log("la reponse est", userData);
-      return userData;
+      const userInfo={"token":accessToken,"userInfo":userData}
+      return userInfo;
     } else {
       console.log("échec de récupération des données !");
     }
@@ -190,7 +191,7 @@ async function exchangeGoogleCodeForToken(code) {
       const tokenResponse = await axios.post('https://auth.atlassian.com/oauth/token', {
         code,
         client_id: process.env.JIRA_ID,
-        client_secret: process.env.JIRA_ID,
+        client_secret: process.env.JIRA_SECRET,
         redirect_uri: jira_redirecturi,
         grant_type: 'authorization_code',
       });
@@ -204,8 +205,10 @@ async function exchangeGoogleCodeForToken(code) {
       });
       if (userDataResponse.status === 200) { 
         const userData = userDataResponse.data;
-        console.log("la reponse est", userData);
-        return userData;
+       // console.log("la reponse est", userData);
+        const userInfo={"token":accessToken,"userInfo":userData}
+      //  return userInfo;
+        return userInfo;
       } else {
         console.log("échec de récupération des données !");
       }
