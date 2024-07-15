@@ -16,7 +16,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-app.post('/Sites/Site', async (req, res) => {
+app.post('/AddData', async (req, res) => {
 
     try {
     
@@ -51,12 +51,12 @@ app.post('/Sites/Site', async (req, res) => {
                   where('hook', '==', hook),
                   where('url', '==', url));
 
-
+// Exécutez la requête
 const querySnapshot = await getDocs(q);
 
 if ( !querySnapshot.empty) {
   res.status(400).send('The URLs entered contain duplicates. Please ensure each URL is unique.')
-  return; 
+  return; // Sortez de la fonction ou gérez l'erreur / le message d'erreur ici
 }else{
 
 
@@ -88,11 +88,11 @@ res.status(200).send('Resource added successfully');
     res.sendFile(path.join(__dirname, 'index.html'));
   });
 
-  app.get('/Sites', async (req, res) => {
+  app.get('/GetData', async (req, res) => {
     try {
       const mappingTableRef = collection(dbNode, "MappingTable");
 
-
+// Récupération de tous les documents de la collection "MappingTable"
 const querySnapshot = await getDocs(mappingTableRef);
      
       
@@ -107,7 +107,8 @@ const querySnapshot = await getDocs(mappingTableRef);
       res.status(500).send('Erreur lors de la récupération');
     }
   });
-
+  // sign in with google
+ 
   const clientid = process.env.GOOGLE_ID;
 const clientsecret = process.env.GOOGLE_SECRET;
 const redirecturi = 'https://expensemobileapp-2.onrender.com/signin-google';
@@ -117,12 +118,12 @@ const jira_redirecturi = 'https://expensemobileapp-2.onrender.com/signin-jira';
 
 app.get('/signin-google', async (req, res) => {
   try {
-  
+    // Si le code d'autorisation est présent dans la requête, échangez-le contre un token
     if (req.query.code) {
       const code = req.query.code;
-      console.log("code trouver dans la requette")
+      
       const tokenResponse = await exchangeGoogleCodeForToken(code);
-      res.send(tokenResponse); 
+      res.send(tokenResponse); // Envoyer la réponse du token à l'utilisateur ou traiter ici
     } else {
      
       const authUrl = getGoogleAuthUrl();
@@ -153,30 +154,29 @@ function getJiraAuthUrl() {
 }
 
 async function exchangeGoogleCodeForToken(code) {
-  console.log("le code est",code)
+  console.log("le code obtenu",code)
   try {
     const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
       code,
-      client_id: clientid,
-      client_secret: clientsecret,
+      client_id: process.env.GOOGLE_ID,
+      client_secret: process.env.GOOGLE_SECRET,
       redirect_uri: redirecturi,
       grant_type: 'authorization_code',
     });
 
+
     const accessToken = tokenResponse.data.access_token;
+    console.log("token recuperer",accessToken)
 
     const userDataResponse = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    if (userDataResponse.status === 200) { 
-      const userData = userDataResponse.data;
-      console.log("la reponse est", userData);
-      return userData;
-    } else {
-      console.log("échec de récupération des données !");
-    }
+    const userInfo=[];
+   
+
+    return userDataResponse;
   } catch (error) {
     console.error('Erreur lors de l\'échange du code contre le token :', error.message);
     throw error;
@@ -202,13 +202,9 @@ async function exchangeGoogleCodeForToken(code) {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      if (userDataResponse.status === 200) { 
-        const userData = userDataResponse.data;
-        console.log("la reponse est", userData);
-        return userData;
-      } else {
-        console.log("échec de récupération des données !");
-      }
+      const userInfo=[];
+      
+      return userDataResponse;
     } catch (error) {
       console.error('Erreur lors de l\'échange du code contre le token :', error.message);
       throw error;
@@ -217,13 +213,13 @@ async function exchangeGoogleCodeForToken(code) {
 
   app.get('/signin-jira', async (req, res) => {
     try {
-     
+      // Si le code d'autorisation est présent dans la requête, échangez-le contre un token
       if (req.query.code) {
         const code = req.query.code;
         const tokenResponse = await exchangeJiraCodeForToken(code);
-        res.send(tokenResponse);
+        res.send(tokenResponse); // Envoyer la réponse du token à l'utilisateur ou traiter ici
       } else {
-     
+        // Sinon, redirigez l'utilisateur vers l'URL d'authentification Google
         const authUrl =  getJiraAuthUrl();
         res.redirect(authUrl);
       }
@@ -234,7 +230,7 @@ async function exchangeGoogleCodeForToken(code) {
   });
   
   
-
+  // Démarrer le serveur
   app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);
   });
