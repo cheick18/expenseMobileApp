@@ -122,7 +122,7 @@ app.get('/signin-google', async (req, res) => {
       const code = req.query.code;
       console.log("code trouver dans la requette")
       const tokenResponse = await exchangeGoogleCodeForToken(code);
-      res.send(tokenResponse); 
+      res.json(tokenResponse); 
     } else {
      
       const authUrl = getGoogleAuthUrl();
@@ -224,7 +224,7 @@ async function exchangeGoogleCodeForToken(code) {
       if (req.query.code) {
         const code = req.query.code;
         const tokenResponse = await exchangeJiraCodeForToken(code);
-        res.send(tokenResponse);
+        res.json(tokenResponse);
       } else {
      
         const authUrl =  getJiraAuthUrl();
