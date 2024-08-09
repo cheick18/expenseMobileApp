@@ -156,9 +156,9 @@ const querySnapshot = await getDocs(mappingTableRef);
      
       if (req.query.code) {
         const code = req.query.code;
-        const tokenResponse = await exchangeJiraCodeForToken(code);
+       // const tokenResponse = await exchangeJiraCodeForToken(code);
       //  const accessToken = response.data.access_token;
-        res.redirect(`com.waga.janngamobileapp:/oauthredirect?access_token=${tokenResponse}`);
+        res.redirect(`com.waga.janngamobileapp:/oauthredirect?access_token=${code}`);
       //  res.send(tokenResponse);
       } else {
      
