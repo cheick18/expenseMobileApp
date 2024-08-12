@@ -108,9 +108,7 @@ const querySnapshot = await getDocs(mappingTableRef);
     }
   });
   function getJiraAuthUrl() {
-
-    return 'https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=oQ1Cp0ZVBnU3FizZcbJ6x3OmFfylph9G&scope=read%3Ame%20read%3Aaccount&redirect_uri=http%3A%2F%2Flocalhost%3A80%2Fsignin-jira&response_type=code&prompt=consent'
-  //  return `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.JIRA_ID}&scope=read%3Ame%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider%20read%3Ajira-work&redirect_uri=https%3A%2F%2Fexpensemobileapp-2.onrender.com%2Fsignin-jira&response_type=code&prompt=consent`
+    return `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.JIRA_ID}&scope=read%3Ame%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider%20read%3Ajira-work&redirect_uri=https%3A%2F%2Fexpensemobileapp-2.onrender.com%2Fsignin-jira&response_type=code&prompt=consent`
    }
   async function exchangeJiraCodeForToken(code) {
  
@@ -126,7 +124,21 @@ const querySnapshot = await getDocs(mappingTableRef);
       });
   
       const accessToken = tokenResponse.data.access_token;
-   
+      /*
+  
+      const userDataResponse = await axios.get('https://api.atlassian.com/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (userDataResponse.status === 200) { 
+        const userData = userDataResponse.data;
+        console.log("la reponse est", userData);
+        return userData;
+      } else {
+        console.log("échec de récupération des données !");
+      }
+      */
       res.redirect(`com.waga.stickersmash:/oauthredirect?access_token=${accessToken}`);
       console.log("le token est retourner")
     } catch (error) {
