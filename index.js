@@ -108,7 +108,7 @@ const querySnapshot = await getDocs(mappingTableRef);
     }
   });
   function getJiraAuthUrl() {
-    return `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.JIRA_ID}&scope=read%3Ame%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider%20read%3Ajira-work&redirect_uri=https%3A%2F%2Fexpensemobileapp-2.onrender.com%2Fsignin-jira&state=&response_type=code&prompt=consent`
+    return `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${process.env.JIRA_ID}&scope=read%3Ame%20manage%3Ajira-project%20manage%3Ajira-configuration%20read%3Ajira-user%20write%3Ajira-work%20manage%3Ajira-webhook%20manage%3Ajira-data-provider%20read%3Ajira-work&redirect_uri=https%3A%2F%2Fexpensemobileapp-2.onrender.com%2Fsignin-jira&response_type=code&prompt=consent`
    }
   async function exchangeJiraCodeForToken(code) {
  
