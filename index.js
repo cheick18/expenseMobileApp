@@ -161,7 +161,9 @@ const querySnapshot = await getDocs(mappingTableRef);
         const code = req.query.code;
         const tokenResponse = await exchangeJiraCodeForToken(code);
       //  const accessToken = response.data.access_token;
-        res.redirect(`com.waga.stickersmash:/oauthredirect?access_token=${tokenResponse}`);
+        //res.redirect(`com.waga.stickersmash:/oauthredirect?access_token=${tokenResponse}`);
+        res.redirect(`stickersmash://?access_token=${tokenResponse}`);
+        //stickersmash
       //  res.send(tokenResponse);
       } else {
      
