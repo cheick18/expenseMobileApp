@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Documentation de l'API</title>
+  <script>
+    function getQueryParam(name){
+      const urlParams=new URLSearchParams(window.location.search);
+      return urlParams.get(name)
+
+    }
+
+    const token= getQueryParam('acces_token');
+    if(token){
+      console.log("voici le token");
+        window.location.href=`?acces_token=${token}`
+    }
+  </script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -43,11 +56,8 @@
             <p>Récupère toutes les ressources de la base de données.</p>
           
         </div>   
-        <div class="endpoint">
-          <h2>GET /Signin-jira</h2>
-          <p>Permet de se connecter à son compte Jira et de récupérer les informations de l'utilisateur authentifié.</p>
-        
-      </div> 
+       
+
       
     
       
