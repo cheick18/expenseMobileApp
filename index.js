@@ -13,11 +13,45 @@ const {   dbNode,addDoc,doc,collection,query,getDocs,where} = require('./firebas
 const app = express();
 const port = 80;
 app.use(cors()); 
+const XLSX = require('xlsx');
 app.use(bodyParser.json());
 const clientid = process.env.GOOGLE_ID;
 const clientsecret = process.env.GOOGLE_SECRET;
 const redirecturi = 'https://expensemobileapp-2.onrender.com/signin-google';
 const googleAuthUrl = 'https://accounts.google.com/o/oauth2/auth';
+app.get('/download', (req, res) => {
+  // Exemple de données JSON
+
+  const encodedData = req.query.data;
+
+    if (!encodedData) {
+        return res.status(400).send('No data provided');
+    }
+    let datax;
+    try {
+        const jsonData = decodeURIComponent(encodedData);
+        datax = JSON.parse(jsonData);
+        console.log(datax)
+    } catch (error) {
+        return res.status(400).send('Invalid data format');
+    }
+  
+ 
+  const ws = XLSX.utils.json_to_sheet(datax);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+
+  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+
+  // Définir les en-têtes de réponse pour le téléchargement
+  res.setHeader('Content-Disposition', 'attachment; filename=expenses.xlsx');
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+  res.send(wbout);
+});
+
+
 
 
 app.post('/Site', async (req, res) => {
