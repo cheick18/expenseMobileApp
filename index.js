@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const axios = require('axios')
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const querystring = require('querystring');
 
 const {   dbNode,addDoc,doc,collection,query,getDocs,where} = require('./firebaseConfig'); 
@@ -15,6 +17,14 @@ const port = 80;
 app.use(cors()); 
 const XLSX = require('xlsx');
 app.use(bodyParser.json());
+const transporter = nodemailer.createTransport({
+  service: 'gmail', 
+  auth: {
+
+   user: process.env.SECRET_MAIL,
+  pass:process.env.SECRET_PASS
+  }
+});
 const clientid = process.env.GOOGLE_ID;
 const clientsecret = process.env.GOOGLE_SECRET;
 const redirecturi = 'https://expensemobileapp-2.onrender.com/signin-google';
@@ -235,6 +245,51 @@ const querySnapshot = await getDocs(mappingTableRef);
       res.status(500).send('Erreur lors de l\'échange du code contre le token');
     }
   });
+
+
+
+  app.get('/mobile-app-path', (req, res) => {
+    const mail = req.query.mail;
+    console.log("le mail que j'ai envoer", mail)
+ 
+    res.redirect(`sticker://?reset_token=${mail}`);
+  
+  
+  
+  })
+  app.get('/request-reset', (req, res) => {
+    console.log("hello le monde")
+    const encodedData = req.query.mail;
+    console.log("votre mail est",encodedData)
+/*
+  
+  const token = crypto.randomBytes(20).toString('hex');
+  token[token] = encodedData;
+
+*/
+
+const mailOptions = {
+  from: process.env.SECRET_MAIL,
+  to: encodedData,
+  subject: 'Réinitialisation de votre mot de passe',
+  html: `<p>Cliquez sur ce lien pour réinitialiser votre mot de passe :  
+         <a href="https://dd09-41-251-18-1.ngrok-free.app/mobile-app-path?mail=${encodedData}">Expense Mobile Tracker</a></p>`
+};
+
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+        console.log(err)
+      return res.status(500).send('Erreur lors de l\'envoi de l\'email.',err);
+    }
+    res.sendFile(path.join(__dirname, 'Send-message.html'));
+  });
+
+  
+});
+
+  
+
   
   function getGoogleAuthUrl() {
     const queryParams = {
@@ -279,7 +334,6 @@ const querySnapshot = await getDocs(mappingTableRef);
     }
   }
   
-   
 
   app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);
