@@ -273,7 +273,7 @@ const mailOptions = {
   to: encodedData,
   subject: 'Réinitialisation de votre mot de passe',
   html: `<p>Cliquez sur ce lien pour réinitialiser votre mot de passe :  
-         <a href="https://expensemobileapp-2.onrender.com/?mail=${encodedData}">Expense Mobile Tracker</a></p>`
+         <a href="https://expensemobileapp-2.onrender.com/mobile-app-path?mail=${encodedData}">Expense Mobile Tracker</a></p>`
 };
 
 
